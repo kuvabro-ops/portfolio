@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PixelCraft Studio — Professional Web Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg: #ffffff;
+      --bg2: #f8faff;
+      --surface: #ffffff;
+      --surface2: #111d35;
+      --accent: #3b82f6;
+      --accent2: #06b6d4;
+      --gold: #f59e0b;
+      --text: #333333;
+      --text2: #000000;
+      --border: rgba(59,130,246,0.15);
+      --glow: rgba(59,130,246,0.3);
+      --radius: 16px;
+      --nav-h: 72px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+    h1,h2,h3,h4,h5 { font-family: 'calibri', sans-serif; line-height: 1.1; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-h);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 5vw;
+      transition: background 0.4s, backdrop-filter 0.4s, border-color 0.4s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      border-color: var(--border);
+    }
+    .nav-logo {
+      font-family: 'calibri', sans-serif;
+      font-weight: 800; font-size: 1.3rem;
+      color: var(--text); text-decoration: none;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo span { color: var(--accent); }
+    .logo-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 0.85rem; color: #fff;
+    }
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--text2); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff !important;
+      padding: 9px 22px; border-radius: 50px;
+      font-weight: 600 !important;
+      transition: opacity 0.2s, transform 0.2s !important;
+    }
+    .nav-cta:hover { opacity: 0.9; transform: translateY(-1px) !important; color: #fff !important; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+    .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: 0.3s; }
+
+    /* ── HERO ── */
+    #hero {
+      position: relative; min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: var(--nav-h) 5vw 0;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0;
+      background-image:
+        linear-gradient(rgba(59,130,246,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(59,130,246,0.07) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 100%);
+    }
+    .hero-orb {
+      position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none;
+    }
+    .orb1 {
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%);
+      top: -100px; left: -100px;
+      animation: orbFloat1 8s ease-in-out infinite;
+    }
+    .orb2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%);
+      bottom: -50px; right: -80px;
+      animation: orbFloat2 10s ease-in-out infinite;
+    }
+    @keyframes orbFloat1 {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(40px, 30px); }
+    }
+    @keyframes orbFloat2 {
+      0%,100% { transform: translate(0,0); }
+      50% { transform: translate(-30px, -20px); }
+    }
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center; max-width: 900px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: var(--accent2); font-size: 0.82rem; font-weight: 500;
+      padding: 7px 16px; border-radius: 50px;
+      margin-bottom: 2rem;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.8s 0.2s forwards;
+    }
+    .hero-badge i { font-size: 0.75rem; }
+    .hero-title {
+      font-size: clamp(2.8rem, 7vw, 5.5rem);
+      font-weight: 800; line-height: 1.05;
+      letter-spacing: -0.03em;
+      opacity: 0; transform: translateY(30px);
+      animation: fadeUp 0.9s 0.4s forwards;
+    }
+    .hero-title .line2 { color: var(--accent); }
+    .hero-title .line3 {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      margin-top: 1.5rem; font-size: 1.1rem;
+      color: var(--text2); line-height: 1.7;
+      max-width: 580px; margin-left: auto; margin-right: auto;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.9s 0.6s forwards;
+    }
+    .hero-actions {
+      margin-top: 2.5rem;
+      display: flex; align-items: center; justify-content: center; gap: 1rem; flex-wrap: wrap;
+      opacity: 0; transform: translateY(20px);
+      animation: fadeUp 0.9s 0.8s forwards;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; text-decoration: none;
+      padding: 14px 30px; border-radius: 50px;
+      font-family: 'calibri', sans-serif; font-weight: 600; font-size: 0.95rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 32px rgba(59,130,246,0.3);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(59,130,246,0.4); }
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 9px;
+      border: 1px solid var(--border);
+      color: var(--text); text-decoration: none;
+      padding: 14px 28px; border-radius: 50px;
+      font-family: 'calibri', sans-serif; font-weight: 600; font-size: 0.95rem;
+      transition: border-color 0.2s, background 0.2s;
+      background: rgba(255,255,255,0.03);
+    }
+    .btn-outline:hover { border-color: var(--accent); background: rgba(59,130,246,0.08); }
+    .hero-stats {
+      margin-top: 4rem;
+      display: flex; align-items: center; justify-content: center; gap: 3rem; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.9s 1s forwards;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-family: 'calibri', sans-serif; font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--text2); margin-top: 4px; }
+    .stat-divider { width: 1px; height: 40px; background: var(--border); }
+    .scroll-hint {
+      position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+      color: var(--text2); font-size: 0.78rem;
+      opacity: 0; animation: fadeUp 1s 1.4s forwards;
+    }
+    .scroll-hint i { animation: scrollBounce 2s infinite; }
+    @keyframes scrollBounce {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(6px); }
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0; transform: translateY(40px);
+      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-left {
+      opacity: 0; transform: translateX(-40px);
+      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal-left.visible { opacity: 1; transform: translateX(0); }
+    .reveal-right {
+      opacity: 0; transform: translateX(40px);
+      transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
+    }
+    .reveal-right.visible { opacity: 1; transform: translateX(0); }
+    .d1 { transition-delay: 0.1s; }
+    .d2 { transition-delay: 0.2s; }
+    .d3 { transition-delay: 0.3s; }
+    .d4 { transition-delay: 0.4s; }
+    .d5 { transition-delay: 0.5s; }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+    .section-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      color: var(--accent2); font-size: 0.8rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.12em;
+      margin-bottom: 1rem;
+    }
+    .section-tag::before {
+      content: ''; width: 24px; height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+    .section-title {
+      font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .section-sub { color: var(--text2); font-size: 1.05rem; line-height: 1.7; margin-top: 1rem; }
+
+    /* ── SERVICES SECTION ── */
+    #services {
+      padding: 7rem 5vw;
+    }
+    .services-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    .service-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .service-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0); transition: transform 0.3s;
+      transform-origin: left;
+    }
+    .service-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(59,130,246,0.35);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(59,130,246,0.1);
+    }
+    .service-card:hover::before { transform: scaleX(1); }
+    .svc-icon {
+      width: 52px; height: 52px;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 14px;
+      display: grid; place-items: center;
+      margin-bottom: 1.4rem;
+      color: var(--accent);
+      font-size: 1.2rem;
+    }
+    .svc-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+    .svc-desc { color: var(--text2); font-size: 0.9rem; line-height: 1.6; }
+
+    /* ── PACKAGES SECTION ── */
+    #packages {
+      padding: 7rem 5vw;
+      background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+    }
+    .packages-header { text-align: center; max-width: 620px; margin: 0 auto 4rem; }
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .pkg-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .pkg-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+    }
+    .pkg-card.featured {
+      border-color: rgba(59,130,246,0.5);
+      background: linear-gradient(160deg, rgba(59,130,246,0.08) 0%, var(--surface) 60%);
+      box-shadow: 0 0 0 1px rgba(59,130,246,0.2), 0 20px 60px rgba(59,130,246,0.1);
+    }
+    .pkg-card.featured:hover { box-shadow: 0 0 0 1px rgba(59,130,246,0.4), 0 30px 80px rgba(59,130,246,0.2); }
+    .pkg-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; font-size: 0.72rem; font-weight: 700;
+      padding: 5px 12px; border-radius: 50px;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 1.2rem;
+    }
+    .pkg-name {
+      font-size: 1.6rem; font-weight: 800; margin-bottom: 0.3rem;
+    }
+    .pkg-tagline { color: var(--text2); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .pkg-price {
+      font-family: 'calibri', sans-serif;
+      font-size: 3rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1; margin-bottom: 0.3rem;
+    }
+    .pkg-delivery {
+      display: flex; align-items: center; gap: 6px;
+      color: var(--text2); font-size: 0.85rem;
+      margin-bottom: 1.8rem; padding-bottom: 1.8rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .pkg-delivery i { color: var(--accent2); }
+    .pkg-features { list-style: none; display: flex; flex-direction: column; gap: 0.9rem; }
+    .pkg-features li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.9rem; color: var(--text2);
+    }
+    .pkg-features li i {
+      color: var(--accent2); font-size: 0.8rem;
+      margin-top: 3px; flex-shrink: 0;
+    }
+    .pkg-cta {
+      display: block; text-align: center; margin-top: 2rem;
+      padding: 13px; border-radius: 12px;
+      font-family: 'calibri', sans-serif; font-weight: 700; font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.25s;
+    }
+    .pkg-cta-outline {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: transparent;
+    }
+    .pkg-cta-outline:hover { border-color: var(--accent); background: rgba(59,130,246,0.08); color: var(--accent); }
+    .pkg-cta-solid {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+    }
+    .pkg-cta-solid:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 12px 32px rgba(59,130,246,0.4); }
+
+    /* ── ADD-ONS SECTION ── */
+    #addons {
+      padding: 7rem 5vw;
+    }
+    .addons-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      align-items: start; max-width: 1100px; margin: 0 auto;
+    }
+    .addons-table {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .addons-table-head {
+      display: grid; grid-template-columns: 1fr auto;
+      padding: 1rem 1.5rem;
+      background: rgba(59,130,246,0.08);
+      border-bottom: 1px solid var(--border);
+    }
+    .addons-table-head span {
+      font-family: 'calibri', sans-serif; font-weight: 700;
+      font-size: 0.85rem; color: var(--accent2);
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .addon-row {
+      display: grid; grid-template-columns: 1fr auto;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .addon-row:last-child { border-bottom: none; }
+    .addon-row:hover { background: rgba(59,130,246,0.05); }
+    .addon-name {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.92rem;
+    }
+    .addon-name i { color: var(--accent); width: 16px; text-align: center; font-size: 0.85rem; }
+    .addon-price {
+      font-family: 'calibri', sans-serif; font-weight: 700;
+      color: var(--accent2); font-size: 0.92rem;
+    }
+    .payment-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2rem;
+    }
+    .payment-title {
+      font-family: 'calibri', sans-serif; font-size: 1.3rem; font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .payment-split {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .split-item {
+      background: rgba(59,130,246,0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.2rem; text-align: center;
+    }
+    .split-pct {
+      font-family: 'calibri', sans-serif; font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .split-label { font-size: 0.8rem; color: var(--text2); margin-top: 4px; }
+    .payment-methods { display: flex; flex-direction: column; gap: 0.7rem; }
+    .pay-method {
+      display: flex; align-items: center; gap: 12px;
+      padding: 0.8rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: 10px; font-size: 0.9rem;
+    }
+    .pay-method i { color: var(--accent2); width: 18px; text-align: center; }
+    .notes-card {
+      margin-top: 1.5rem;
+      background: rgba(245,158,11,0.06);
+      border: 1px solid rgba(245,158,11,0.2);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+    }
+    .notes-title {
+      display: flex; align-items: center; gap: 8px;
+      font-family: 'calibri', sans-serif; font-weight: 700;
+      color: var(--gold); margin-bottom: 1rem; font-size: 0.95rem;
+    }
+    .notes-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .notes-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.88rem; color: var(--text2);
+    }
+    .notes-list li i { color: var(--gold); font-size: 0.75rem; margin-top: 4px; flex-shrink: 0; }
+
+    /* ── CONTACT SECTION ── */
+    #contact {
+      padding: 7rem 5vw;
+      background: linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+    }
+    .contact-layout {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem;
+      max-width: 1100px; margin: 0 auto; align-items: center;
+    }
+    .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
+    .contact-item {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      text-decoration: none; color: var(--text);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .contact-item:hover { border-color: rgba(59,130,246,0.4); transform: translateX(4px); }
+    .contact-item-icon {
+      width: 44px; height: 44px; flex-shrink: 0;
+      background: rgba(59,130,246,0.1);
+      border: 1px solid rgba(59,130,246,0.2);
+      border-radius: 12px;
+      display: grid; place-items: center;
+      color: var(--accent); font-size: 1rem;
+    }
+    .contact-item-label { font-size: 0.75rem; color: var(--text2); margin-bottom: 2px; }
+    .contact-item-value { font-weight: 600; font-size: 0.95rem; }
+    .contact-form {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2.5rem;
+    }
+    .form-title {
+      font-family: 'calibri', sans-serif; font-size: 1.5rem; font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+    .form-sub { color: var(--text2); font-size: 0.88rem; margin-bottom: 2rem; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--text2); margin-bottom: 6px;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; padding: 12px 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+      transition: border-color 0.2s, background 0.2s;
+      outline: none;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--accent);
+      background: rgba(59,130,246,0.05);
+    }
+    .form-group select option { background: var(--surface); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .btn-submit {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff; border: none; border-radius: 12px;
+      font-family: 'calibri', sans-serif; font-weight: 700; font-size: 1rem;
+      cursor: pointer; transition: opacity 0.2s, transform 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 8px 24px rgba(59,130,246,0.3);
+      margin-top: 0.5rem;
+    }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      padding: 3rem 5vw 2rem;
+    }
+    .footer-grid {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem; margin-bottom: 3rem;
+    }
+    .footer-brand p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; margin-top: 1rem; }
+    .footer-social { display: flex; gap: 10px; margin-top: 1.5rem; }
+    .social-btn {
+      width: 36px; height: 36px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: grid; place-items: center;
+      color: var(--text2); font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+    }
+    .social-btn:hover { background: rgba(59,130,246,0.15); color: var(--accent); border-color: rgba(59,130,246,0.3); }
+    .footer-col h4 {
+      font-family: 'calibri', sans-serif; font-size: 0.85rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      color: var(--text2); margin-bottom: 1.2rem;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-col ul a { color: var(--text2); text-decoration: none; font-size: 0.88rem; transition: color 0.2s; }
+    .footer-col ul a:hover { color: var(--accent2); }
+    .footer-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-bottom p { color: var(--text2); font-size: 0.82rem; }
+    .footer-bottom span { color: var(--accent2); }
+
+    /* ── PARALLAX STRIP ── */
+    .parallax-strip {
+      overflow: hidden; padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(59,130,246,0.03);
+    }
+    .strip-track {
+      display: flex; gap: 3rem;
+      animation: stripScroll 25s linear infinite;
+      width: max-content;
+    }
+    .strip-track:hover { animation-play-state: paused; }
+    @keyframes stripScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .strip-item {
+      display: flex; align-items: center; gap: 10px;
+      font-family: 'calibri', sans-serif; font-size: 0.88rem; font-weight: 700;
+      color: var(--text2); white-space: nowrap;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .strip-item i { color: var(--accent); font-size: 0.75rem; }
+    .strip-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); }
+
+    /* ── PROCESS SECTION ── */
+    #process {
+      padding: 7rem 5vw;
+      background: linear-gradient(180deg, var(--bg2) 0%, var(--bg) 100%);
+    }
+    .process-header { text-align: center; max-width: 580px; margin: 0 auto 5rem; }
+    .process-steps {
+      max-width: 900px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 0;
+      position: relative;
+    }
+    .process-steps::before {
+      content: ''; position: absolute;
+      left: 32px; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2), transparent);
+    }
+    .process-step {
+      display: flex; gap: 2rem; padding-bottom: 3rem;
+      position: relative;
+    }
+    .step-num {
+      width: 64px; height: 64px; flex-shrink: 0;
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: grid; place-items: center;
+      font-family: 'calibri', sans-serif; font-size: 1.1rem; font-weight: 800;
+      color: var(--accent); z-index: 1;
+    }
+    .step-body { padding-top: 0.8rem; }
+    .step-title { font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .step-desc { color: var(--text2); font-size: 0.92rem; line-height: 1.7; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: fixed; top: var(--nav-h); left: 0; right: 0; background: rgba(5,8,16,0.98); padding: 2rem; border-bottom: 1px solid var(--border); gap: 1.5rem; backdrop-filter: blur(20px); }
+      .nav-links.open { display: flex; }
+      .hamburger { display: flex; }
+      .hero-stats { gap: 1.5rem; }
+      .stat-divider { display: none; }
+      .packages-grid, .services-grid { grid-template-columns: 1fr; }
+      .addons-layout { grid-template-columns: 1fr; gap: 2rem; }
+      .contact-layout { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .process-steps::before { left: 24px; }
+      .step-num { width: 48px; height: 48px; font-size: 0.9rem; }
+    }
+    @media (max-width: 480px) {
+      .footer-grid { grid-template-columns: 1fr; }
+      .payment-split { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <a href="index.html" class="nav-logo">
+      <div class="logo-icon"><i class="fa-solid fa-code"></i></div>
+      Web<span>Design</span>
+    </a>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#services">Services</a></li>
+      <li><a href="packages.html">Packages</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#addons">Add-ons</a></li>
+      <li><a href="#contact" class="nav-cta">Get a Quote</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-orb orb1"></div>
+    <div class="hero-orb orb2"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <i class="fa-solid fa-bolt"></i>
+        Professional Website Development Services
+      </div>
+      <h1 class="hero-title">
+        We Build Websites<br>
+        <span class="line2">That Win Clients</span><br>
+        <span class="line3">For Your Business</span>
+      </h1>
+      <p class="hero-sub">
+        From stunning landing pages to full e-commerce platforms — we craft fast, responsive, and conversion-ready websites tailored to your brand.
+      </p>
+      <div class="hero-actions">
+        <a href="packages.html" class="btn-primary">
+          <i class="fa-solid fa-layer-group"></i>
+          View Packages
+        </a>
+        <a href="#contact" class="btn-outline">
+          <i class="fa-solid fa-paper-plane"></i>
+          Get a Free Quote
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-num">50+</div>
+          <div class="stat-label">Projects Delivered</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Client Satisfaction</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-num">5-day</div>
+          <div class="stat-label">Fastest Delivery</div>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <div class="stat-num">3+</div>
+          <div class="stat-label">Months Free Support</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <span>Scroll down</span>
+      <i class="fa-solid fa-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- MARQUEE STRIP -->
+  <div class="parallax-strip">
+    <div class="strip-track">
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Responsive Design</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>SEO Optimization</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Fast Loading</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>WhatsApp Integration</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Payment Gateway</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Custom UI Design</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Google Analytics</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>E-commerce Ready</div><div class="strip-dot"></div>
+      <!-- Duplicate for loop -->
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Responsive Design</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>SEO Optimization</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Fast Loading</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>WhatsApp Integration</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Payment Gateway</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Custom UI Design</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>Google Analytics</div><div class="strip-dot"></div>
+      <div class="strip-item"><i class="fa-solid fa-circle-check"></i>E-commerce Ready</div><div class="strip-dot"></div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="services-header reveal">
+      <div class="section-tag">What We Do</div>
+      <h2 class="section-title">Everything Your Business Needs Online</h2>
+      <p class="section-sub">We offer a complete suite of web services — from design to launch and beyond.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal d1">
+        <div class="svc-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+        <div class="svc-title">Responsive Web Design</div>
+        <div class="svc-desc">Pixel-perfect websites that look flawless on every device — mobile, tablet, and desktop.</div>
+      </div>
+      <div class="service-card reveal d2">
+        <div class="svc-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+        <div class="svc-title">SEO Optimization</div>
+        <div class="svc-desc">Built for search engines from the ground up — structured data, fast loading, and semantic HTML.</div>
+      </div>
+      <div class="service-card reveal d3">
+        <div class="svc-icon"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div class="svc-title">E-commerce Solutions</div>
+        <div class="svc-desc">Fully functional online stores with payment gateway integration and order management systems.</div>
+      </div>
+      <div class="service-card reveal d4">
+        <div class="svc-icon"><i class="fa-brands fa-whatsapp"></i></div>
+        <div class="svc-title">WhatsApp Integration</div>
+        <div class="svc-desc">Live chat integration to connect with customers instantly and boost conversions on every page.</div>
+      </div>
+      <div class="service-card reveal d5">
+        <div class="svc-icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="svc-title">Booking Systems</div>
+        <div class="svc-desc">Appointment and booking systems for service businesses — automated and easy to manage.</div>
+      </div>
+      <div class="service-card reveal d1">
+        <div class="svc-icon"><i class="fa-solid fa-gauge-high"></i></div>
+        <div class="svc-title">Speed Optimization</div>
+        <div class="svc-desc">Optimized images, caching, and clean code to ensure your website loads in under 2 seconds.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PACKAGES PREVIEW -->
+  <section id="packages">
+    <div class="packages-header reveal">
+      <div class="section-tag">Pricing</div>
+      <h2 class="section-title">Transparent Packages for Every Business</h2>
+      <p class="section-sub">No hidden fees. No surprises. Choose the package that fits your goals.</p>
+    </div>
+    <div class="packages-grid">
+
+      <!-- Starter -->
+      <div class="pkg-card reveal d1">
+        <div class="pkg-name">Starter</div>
+        <div class="pkg-tagline">Perfect for small businesses and personal brands</div>
+        <div class="pkg-price">&#8377;7,999</div>
+        <div class="pkg-delivery"><i class="fa-regular fa-clock"></i> Delivery in 5–7 Days</div>
+        <ul class="pkg-features">
+          <li><i class="fa-solid fa-circle-check"></i>1 Page Responsive Website</li>
+          <li><i class="fa-solid fa-circle-check"></i>Mobile Friendly Design</li>
+          <li><i class="fa-solid fa-circle-check"></i>WhatsApp Integration</li>
+          <li><i class="fa-solid fa-circle-check"></i>Contact Form</li>
+          <li><i class="fa-solid fa-circle-check"></i>Social Media Links</li>
+          <li><i class="fa-solid fa-circle-check"></i>Basic SEO Setup</li>
+          <li><i class="fa-solid fa-circle-check"></i>Free 1 Month Support</li>
+        </ul>
+        <a href="packages.html" class="pkg-cta pkg-cta-outline">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Business -->
+      <div class="pkg-card featured reveal d2">
+        <div class="pkg-badge"><i class="fa-solid fa-star"></i> Most Popular</div>
+        <div class="pkg-name">Business</div>
+        <div class="pkg-tagline">Best for growing businesses needing professional presence</div>
+        <div class="pkg-price">&#8377;14,999</div>
+        <div class="pkg-delivery"><i class="fa-regular fa-clock"></i> Delivery in 7–10 Days</div>
+        <ul class="pkg-features">
+          <li><i class="fa-solid fa-circle-check"></i>Up to 5 Pages Website</li>
+          <li><i class="fa-solid fa-circle-check"></i>Premium Modern Design</li>
+          <li><i class="fa-solid fa-circle-check"></i>Mobile + Tablet Responsive</li>
+          <li><i class="fa-solid fa-circle-check"></i>WhatsApp Chat Integration</li>
+          <li><i class="fa-solid fa-circle-check"></i>Contact &amp; Inquiry Forms</li>
+          <li><i class="fa-solid fa-circle-check"></i>Google Map Integration</li>
+          <li><i class="fa-solid fa-circle-check"></i>SEO Friendly Structure</li>
+          <li><i class="fa-solid fa-circle-check"></i>Free 2 Months Support</li>
+        </ul>
+        <a href="packages.html" class="pkg-cta pkg-cta-solid">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <!-- Premium -->
+      <div class="pkg-card reveal d3">
+        <div class="pkg-name">Premium</div>
+        <div class="pkg-tagline">Complete website with advanced features and full setup</div>
+        <div class="pkg-price">&#8377;29,999</div>
+        <div class="pkg-delivery"><i class="fa-regular fa-clock"></i> Delivery in 10–15 Days</div>
+        <ul class="pkg-features">
+          <li><i class="fa-solid fa-circle-check"></i>Up to 10 Pages</li>
+          <li><i class="fa-solid fa-circle-check"></i>Custom UI/UX Design</li>
+          <li><i class="fa-solid fa-circle-check"></i>Advanced Animations</li>
+          <li><i class="fa-solid fa-circle-check"></i>Booking / Appointment System</li>
+          <li><i class="fa-solid fa-circle-check"></i>E-commerce or Online Ordering</li>
+          <li><i class="fa-solid fa-circle-check"></i>Payment Gateway Integration</li>
+          <li><i class="fa-solid fa-circle-check"></i>Advanced SEO Optimization</li>
+          <li><i class="fa-solid fa-circle-check"></i>Free 3 Months Support</li>
+        </ul>
+        <a href="packages.html" class="pkg-cta pkg-cta-outline">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process">
+    <div class="process-header reveal">
+      <div class="section-tag">How It Works</div>
+      <h2 class="section-title">From Idea to Live in Days</h2>
+      <p class="section-sub">A streamlined, transparent process so you always know where your project stands.</p>
+    </div>
+    <div class="process-steps">
+      <div class="process-step reveal d1">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">Discovery Call</div>
+          <div class="step-desc">We understand your business goals, target audience, and design preferences. You share your content, logo, and references.</div>
+        </div>
+      </div>
+      <div class="process-step reveal d2">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">Advance Payment</div>
+          <div class="step-desc">50% advance payment confirms your project slot. We begin work immediately after confirmation via UPI, Bank Transfer, or Paytm.</div>
+        </div>
+      </div>
+      <div class="process-step reveal d3">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">Design and Development</div>
+          <div class="step-desc">Our team builds your website with premium design, responsive layout, and all required integrations based on your chosen package.</div>
+        </div>
+      </div>
+      <div class="process-step reveal d4">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">Review and Revisions</div>
+          <div class="step-desc">You receive a preview link to review. We incorporate your feedback and make refinements until you are fully satisfied.</div>
+        </div>
+      </div>
+      <div class="process-step reveal d5">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">Launch and Handover</div>
+          <div class="step-desc">Final payment, go live, and handover — including domain setup, hosting configuration, and post-launch support period as per your plan.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADD-ONS & PAYMENT -->
+  <section id="addons">
+    <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto 4rem;">
+      <div class="section-tag">Optional Add-ons</div>
+      <h2 class="section-title">Customize Your Package</h2>
+      <p class="section-sub">Enhance any package with services tailored to your specific needs.</p>
+    </div>
+    <div class="addons-layout">
+      <div>
+        <div class="addons-table reveal">
+          <div class="addons-table-head">
+            <span>Service</span>
+            <span>Price</span>
+          </div>
+          <div class="addon-row">
+            <div class="addon-name"><i class="fa-solid fa-file-circle-plus"></i>Extra Page</div>
+            <div class="addon-price">&#8377;500</div>
+          </div>
+          <div class="addon-row">
+            <div class="addon-name"><i class="fa-solid fa-globe"></i>Domain Setup</div>
+            <div class="addon-price">&#8377;500</div>
+          </div>
+          <div class="addon-row">
+            <div class="addon-name"><i class="fa-solid fa-server"></i>Hosting Setup</div>
+            <div class="addon-price">&#8377;1,000</div>
+          </div>
+          <div class="addon-row">
+            <div class="addon-name"><i class="fa-brands fa-google"></i>Google Business Setup</div>
+            <div class="addon-price">&#8377;1,500</div>
+          </div>
+          <div class="addon-row">
+            <div class="addon-name"><i class="fa-solid fa-wrench"></i>Monthly Maintenance</div>
+            <div class="addon-price">&#8377;1,999/mo</div>
+          </div>
+          <div class="addon-row">
+            <div class="addon-name"><i class="fa-solid fa-palette"></i>Social Media Creatives</div>
+            <div class="addon-price">&#8377;2,500 / 10</div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="payment-card reveal">
+          <div class="payment-title">Payment Terms</div>
+          <div class="payment-split">
+            <div class="split-item">
+              <div class="split-pct">50%</div>
+              <div class="split-label">Advance Payment</div>
+            </div>
+            <div class="split-item">
+              <div class="split-pct">50%</div>
+              <div class="split-label">After Completion</div>
+            </div>
+          </div>
+          <div style="font-size:0.82rem;color:var(--text2);margin-bottom:1rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;">Accepted Methods</div>
+          <div class="payment-methods">
+            <div class="pay-method"><i class="fa-solid fa-mobile-screen"></i>UPI Payment</div>
+            <div class="pay-method"><i class="fa-solid fa-building-columns"></i>Bank Transfer</div>
+            <div class="pay-method"><i class="fa-solid fa-wallet"></i>Paytm / Google Pay / PhonePe</div>
+          </div>
+        </div>
+        <div class="notes-card reveal">
+          <div class="notes-title"><i class="fa-solid fa-triangle-exclamation"></i>Important Notes</div>
+          <ul class="notes-list">
+            <li><i class="fa-solid fa-circle-dot"></i>Custom design charges are separate unless specifically mentioned in the package.</li>
+            <li><i class="fa-solid fa-circle-dot"></i>Content and images should be provided by the client before development begins.</li>
+            <li><i class="fa-solid fa-circle-dot"></i>Project work starts only after advance payment confirmation.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="reveal" style="text-align:center;max-width:580px;margin:0 auto 4rem;">
+      <div class="section-tag">Contact Us</div>
+      <h2 class="section-title">Let's Build Your Online Presence</h2>
+      <p class="section-sub">Reach out today and let's get started on your project.</p>
+    </div>
+    <div class="contact-layout">
+      <div class="contact-info reveal-left">
+        <a href="tel:____________________" class="contact-item">
+          <div class="contact-item-icon"><i class="fa-solid fa-phone"></i></div>
+          <div>
+            <div class="contact-item-label">Phone</div>
+            <div class="contact-item-value">+91 9894008804</div>
+          </div>
+        </a>
+        <a href="mailto:____________________" class="contact-item">
+          <div class="contact-item-icon"><i class="fa-solid fa-envelope"></i></div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-value">kuvabro@gmail.com</div>
+          </div>
+        </a>
+        <!--<a href="#" class="contact-item">
+          <div class="contact-item-icon"><i class="fa-brands fa-instagram"></i></div>
+          <div>
+            <div class="contact-item-label">Instagram</div>
+            <div class="contact-item-value">____________________</div>
+          </div>
+        </a>
+        <a href="#" class="contact-item">
+          <div class="contact-item-icon"><i class="fa-solid fa-globe"></i></div>
+          <div>
+            <div class="contact-item-label">Website</div>
+            <div class="contact-item-value">____________________</div>
+          </div>
+        </a>-->
+        <div style="margin-top:1rem;padding:1.5rem;background:var(--surface);border:1px solid var(--border);border-radius:14px;">
+          <div style="font-family:'Syne',sans-serif;font-weight:700;margin-bottom:0.8rem;font-size:1rem;">Thank you for choosing our services.</div>
+          <div style="color:var(--text2);font-size:0.88rem;line-height:1.7;">We look forward to building your online presence professionally. We will get back to you within 24 hours of receiving your message.</div>
+        </div>
+      </div>
+      <div class="contact-form reveal-right">
+        <div class="form-title">Send a Message</div>
+        <div class="form-sub">Fill in the details and we will get back to you within 24 hours.</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" placeholder="John Doe" />
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" placeholder="+91 98765 43210" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" placeholder="john@example.com" />
+        </div>
+        <div class="form-group">
+          <label>Package Interested In</label>
+          <select>
+            <option>Starter Package — &#8377;7,999</option>
+            <option>Business Package — &#8377;14,999</option>
+            <option>Premium Package — &#8377;29,999</option>
+            <option>Custom Requirement</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Your Message</label>
+          <textarea placeholder="Tell us about your project..."></textarea>
+        </div>
+        <button class="btn-submit">
+          <i class="fa-solid fa-paper-plane"></i>
+          Send Message
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:1rem;display:inline-flex;">
+          <div class="logo-icon"><i class="fa-solid fa-code"></i></div>
+          Web<span>Design</span>
+        </a>
+        <p>Professional website development services for small businesses, startups, and personal brands across India.</p>
+        <div class="footer-social">
+          <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+          <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#">Responsive Design</a></li>
+          <li><a href="#">E-commerce</a></li>
+          <li><a href="#">SEO Setup</a></li>
+          <li><a href="#">Booking Systems</a></li>
+          <li><a href="#">Maintenance</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Packages</h4>
+        <ul>
+          <li><a href="packages.html">Starter — &#8377;7,999</a></li>
+          <li><a href="packages.html">Business — &#8377;14,999</a></li>
+          <li><a href="packages.html">Premium — &#8377;29,999</a></li>
+          <li><a href="#addons">Add-ons</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#process">Our Process</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 PixelCraft Studio. All rights reserved.</p>
+      <p>Made with <span><i class="fa-solid fa-heart"></i></span> in India</p>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 30);
+    });
+
+    // Hamburger
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('open');
+    });
+
+    // Close nav on link click
+    navLinks.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => navLinks.classList.remove('open'));
+    });
+
+    // Scroll reveal
+    const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    revealEls.forEach(el => observer.observe(el));
+
+    // Form submit
+    document.querySelector('.btn-submit').addEventListener('click', function() {
+      this.innerHTML = '<i class="fa-solid fa-circle-check"></i> Message Sent!';
+      this.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
+      setTimeout(() => {
+        this.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send Message';
+        this.style.background = '';
+      }, 3000);
+    });
+  </script>
+</body>
+</html>
